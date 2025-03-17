@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>myDean - Onboarding</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap">
+    <style>
+        :root {
+            --primary-color: #041E42;
+            --primary-hover: #152e4d;
+            --bg-color: #f7f7f8;
+            --text-primary: #2d333a;
+            --border-color: #e5e5e5;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .onboard-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .logo-container {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .logo-container img {
+            height: 80px;
+            width: auto;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .step {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: var(--border-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .step.active {
+            background-color: var(--primary-color);
+        }
+
+        .step.completed {
+            background-color: #28a745;
+        }
+
+        .form-step {
+            display: none;
+        }
+
+        .form-step.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        input, select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+
+        button {
+            padding: 0.75rem 1.5rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: var(--primary-hover);
+        }
+
+        button.secondary {
+            background-color: var(--border-color);
+        }
+
+        button.secondary:hover {
+            background-color: #d0d0d0;
+        }
+
+        .error-message {
+            color: #dc3545;
+            text-align: center;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        #transcript-preview {
+            margin-top: 1rem;
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            display: none;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .loading-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid var(--border-color);
+            border-top: 5px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            margin-top: 1rem;
+            color: var(--primary-color);
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .loading-subtext {
+            margin-top: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-overlay">
+        <div class="loading-container">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Processing transcript...</div>
+            <div class="loading-subtext"></div>
+        </div>
+    </div>
+    <div class="onboard-container">
+        <div class="logo-container">
+            <img src="{{ url_for('static', filename='gtown.png') }}" alt="Georgetown Logo">
+        </div>
+        <h1>Create Your Account</h1>
+        <div id="error-message" class="error-message"></div>
+        
+        <div class="step-indicator">
+            <div class="step active" data-step="1">1</div>
+            <div class="step" data-step="2">2</div>
+            <div class="step" data-step="3">3</div>
+        </div>
+
+        <form id="onboard-form">
+            <div class="form-step active" data-step="1">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="button-group">
+                    <button type="button" class="secondary" onclick="window.location.href='/login'">Previous</button>
+                    <button type="button" onclick="nextStep(1)">Next</button>
+                </div>
+            </div>
+
+            <div class="form-step" data-step="2">
+                <div class="form-group">
+                    <label for="grade">Grade Level</label>
+                    <select id="grade" name="grade" required>
+                        <option value="">Select your grade</option>
+                        <option value="freshman">Freshman</option>
+                        <option value="sophomore">Sophomore</option>
+                        <option value="junior">Junior</option>
+                        <option value="senior">Senior</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="school">School</label>
+                    <select id="school" name="school" required>
+                        <option value="">Select your school</option>
+                        <option value="Georgetown College">Georgetown College</option>
+                        <option value="School of Foreign Service">School of Foreign Service</option>
+                        <option value="McDonough School of Business">McDonough School of Business</option>
+                        <option value="School of Nursing">School of Nursing</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="majors">Major(s)</label>
+                    <select id="majors" name="majors" required>
+                        <option value="">Select your major</option>
+                        <option value="Bachelor of Science in Computer Science (B.S.)">B.S. in Computer Science</option>
+                        <option value="Bachelor of Arts in Computer Science (A.B.)">A.B. in Computer Science</option>
+                        <option value="Bachelor of Arts in Computer Science, Ethics, and Society (CSES)">B.A. in Computer Science, Ethics, and Society</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="minors">Minor(s)</label>
+                    <select id="minors" name="minors">
+                        <option value="">Select your minor (optional)</option>
+                        <option value="Minor in Computer Science">Minor in Computer Science</option>
+                        <option value="Concentration in Technology, Ethics, and Society">Concentration in Technology, Ethics, and Society</option>
+                    </select>
+                </div>
+                <div class="button-group">
+                    <button type="button" class="secondary" onclick="prevStep(2)">Previous</button>
+                    <button type="button" onclick="nextStep(2)">Next</button>
+                </div>
+            </div>
+
+            <div class="form-step" data-step="3">
+                <div class="form-group">
+                    <label for="transcript">Upload Transcript (PDF)</label>
+                    <input type="file" id="transcript" name="transcript" accept=".pdf">
+                    <div id="transcript-preview"></div>
+                </div>
+                <div class="form-group">
+                    <label for="courses">Or Enter Completed Courses (comma-separated)</label>
+                    <input type="text" id="courses" name="courses" placeholder="e.g. COSC-1020, MATH-1350">
+                </div>
+                <div class="button-group">
+                    <button type="button" class="secondary" onclick="prevStep(3)">Previous</button>
+                    <button type="button" onclick="submitForm()">Create Account</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        let currentStep = 1;
+
+        function showStep(step) {
+            document.querySelectorAll('.form-step').forEach(el => el.classList.remove('active'));
+            document.querySelector(`.form-step[data-step="${step}"]`).classList.add('active');
+            
+            document.querySelectorAll('.step').forEach(el => {
+                el.classList.remove('active', 'completed');
+                if (el.dataset.step < step) {
+                    el.classList.add('completed');
+                } else if (el.dataset.step == step) {
+                    el.classList.add('active');
+                }
+            });
+        }
+
+        function nextStep(step) {
+            if (validateStep(step)) {
+                currentStep = step + 1;
+                showStep(currentStep);
+            }
+        }
+
+        function prevStep(step) {
+            currentStep = step - 1;
+            showStep(currentStep);
+        }
+
+        function validateStep(step) {
+            const stepElement = document.querySelector(`.form-step[data-step="${step}"]`);
+            const inputs = stepElement.querySelectorAll('input[required], select[required]');
+            let valid = true;
+
+            inputs.forEach(input => {
+                if (!input.value) {
+                    valid = false;
+                    input.style.borderColor = '#dc3545';
+                } else {
+                    input.style.borderColor = '';
+                }
+            });
+
+            if (!valid) {
+                showError('Please fill in all required fields');
+            }
+
+            return valid;
+        }
+
+        function showError(message) {
+            const errorElement = document.getElementById('error-message');
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+            setTimeout(() => {
+                errorElement.style.display = 'none';
+            }, 3000);
+        }
+
+        document.getElementById('transcript').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const preview = document.getElementById('transcript-preview');
+                preview.style.display = 'block';
+                preview.textContent = `Selected file: ${file.name}`;
+            }
+        });
+
+        async function submitForm() {
+            if (!validateStep(3)) return;
+
+            const formData = new FormData();
+            const form = document.getElementById('onboard-form');
+            
+            // Add form fields
+            formData.append('username', document.getElementById('username').value);
+            formData.append('password', document.getElementById('password').value);
+            formData.append('name', document.getElementById('name').value);
+            formData.append('grade', document.getElementById('grade').value);
+            formData.append('school', document.getElementById('school').value);
+            formData.append('majors', document.getElementById('majors').value);
+            formData.append('minors', document.getElementById('minors').value);
+            formData.append('courses', document.getElementById('courses').value);
+
+            const loadingText = document.querySelector('.loading-text');
+            const loadingSubtext = document.querySelector('.loading-subtext');
+            const loadingOverlay = document.querySelector('.loading-overlay');
+
+            // Show loading overlay immediately
+            loadingText.textContent = 'Creating your account...';
+            loadingSubtext.textContent = 'This will only take a moment';
+            loadingOverlay.style.display = 'flex';
+
+            // Add transcript file if present
+            const transcriptFile = document.getElementById('transcript').files[0];
+            if (transcriptFile) {
+                formData.append('transcript', transcriptFile);
+                loadingText.textContent = 'Processing transcript...';
+                loadingSubtext.textContent = 'This may take a moment';
+            }
+
+            try {
+                const response = await fetch('/onboard', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+                if (response.ok) {
+                    // Update loading message
+                    loadingText.textContent = 'Setting up your profile...';
+                    loadingSubtext.textContent = 'Starting conversation with myDean';
+                    
+                    // Start initial conversation
+                    try {
+                        const chatResponse = await fetch('/start_chat', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            }
+                        });
+                        
+                        if (chatResponse.ok) {
+                            const chatData = await chatResponse.json();
+                            if (chatData.response) {
+                                // Store the welcome message in sessionStorage
+                                sessionStorage.setItem('welcomeMessage', chatData.response);
+                            }
+                            window.location.href = '/';
+                        } else {
+                            throw new Error('Failed to start chat');
+                        }
+                    } catch (error) {
+                        window.location.href = '/';  // Fallback to home page even if chat fails
+                    }
+                } else {
+                    showError(data.message);
+                }
+            } catch (error) {
+                showError('An error occurred. Please try again.');
+            } finally {
+                loadingOverlay.style.display = 'none';
+            }
+        }
+
+        function previousStep(currentStep) {
+            // Update step indicators
+            document.querySelector(`.step[data-step="${currentStep}"]`).classList.remove('active');
+            document.querySelector(`.step[data-step="${currentStep - 1}"]`).classList.remove('completed');
+            document.querySelector(`.step[data-step="${currentStep - 1}"]`).classList.add('active');
+
+            // Show previous step
+            document.querySelector(`.form-step[data-step="${currentStep}"]`).classList.remove('active');
+            document.querySelector(`.form-step[data-step="${currentStep - 1}"]`).classList.add('active');
+        }
+    </script>
+</body>
+</html> 

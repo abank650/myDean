@@ -1,0 +1,23 @@
+{
+  "name": "Andrew Bank",
+  "grade": "senior",
+  "school": "Georgetown College",
+  "majors": [
+    "Bachelor of Arts in Computer Science (A.B.)"
+  ],
+  "minors": [],
+  "courses_completed": [
+    "MATH 2250",
+    "MATH 1350",
+    "COSC 3810",
+    "COSC 2020",
+    "COSC 2010",
+    "COSC 1030",
+    "MATH 1360",
+    "COSC 3200",
+    "COSC 4705",
+    "COSC 1110",
+    "COSC 3610",
+    "COSC 1020"
+  ]
+}

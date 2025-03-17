@@ -1,0 +1,141 @@
+{
+    "majors": {
+      "Bachelor of Science in Computer Science (B.S.)": {
+        "required_courses": {
+          "COSC-1020": "Computer Science I",
+          "COSC-1030": "Computer Science II",
+          "COSC-1110": "Mathematical Methods",
+          "COSC-2010": "Data Structures",
+          "COSC-2020": "Advanced Programming",
+          "COSC-2310": "Computational Structures",
+          "COSC-3200": "Intro to Algorithms",
+          "COSC-3010": "Programming Languages",
+          "COSC-3020": "Operating Systems"
+        },
+        "math_requirements": {
+          "MATH-1350": "Calculus I",
+          "MATH-1360": "Calculus II",
+          "MATH-ELECTIVE1": "Additional Math Elective",
+          "MATH-ELECTIVE2": "Additional Math Elective",
+          "MATH-ELECTIVE3": "Additional Math Elective"
+        },
+        "electives": {
+          "required_count": 5,
+          "valid_patterns": ["COSC-[2-4][0-9]{3}"],
+          "exclude_required": true,
+          "description": "Five COSC 2000+ electives"
+        },
+        "total_credits": 57
+      },
+      "Bachelor of Arts in Computer Science (A.B.)": {
+        "required_courses": {
+          "COSC-1020": "Computer Science I",
+          "COSC-1030": "Computer Science II",
+          "COSC-1110": "Mathematical Methods",
+          "COSC-2010": "Data Structures",
+          "COSC-2020": "Advanced Programming",
+          "COSC-3200": "Intro to Algorithms"
+        },
+        "math_requirements": {
+          "MATH-1350": "Calculus I",
+          "MATH-ELECTIVE1": "Additional Math Elective",
+          "MATH-ELECTIVE2": "Additional Math Elective"
+        },
+        "electives": {
+          "required_count": 4,
+          "valid_patterns": ["COSC-[2-4][0-9]{3}"],
+          "exclude_required": true,
+          "description": "Four COSC 2000+ electives"
+        },
+        "total_credits": 39
+      },
+      "Bachelor of Arts in Computer Science, Ethics, and Society (CSES)": {
+        "required_courses": {
+          "COSC-1020": "Computer Science I",
+          "COSC-1030": "Computer Science II",
+          "COSC-1110": "Mathematical Methods",
+          "COSC-2010": "Data Structures",
+          "COSC-3200": "Intro to Algorithms",
+          "PHIL-2100": "Intro to Tech, Ethics, and Society",
+          "MATH-1040": "Probability and Statistics"
+        },
+        "additional_requirements": {
+          "tech_law_policy": {
+            "required_count": 1,
+            "valid_patterns": ["GOVT-[0-9]{4}", "LAW-[0-9]{4}"],
+            "description": "One course in Technology Law or Policy"
+          },
+          "digital_ethics": {
+            "required_count": 1,
+            "valid_patterns": ["PHIL-[0-9]{4}"],
+            "description": "One Philosophy course in Digital Ethics"
+          },
+          "tes_electives": {
+            "required_count": 2,
+            "valid_patterns": ["PHIL-[0-9]{4}", "GOVT-[0-9]{4}", "LAW-[0-9]{4}"],
+            "description": "Two TES electives"
+          }
+        },
+        "electives": {
+          "required_count": 2,
+          "valid_patterns": ["COSC-[2-4][0-9]{3}"],
+          "exclude_required": true,
+          "description": "Two COSC 2000+ electives"
+        },
+        "total_credits": 39
+      }
+    },
+    "minors": {
+      "Minor in Computer Science": {
+        "required_courses": {
+          "COSC-1020": "Computer Science I",
+          "COSC-1030": "Computer Science II",
+          "COSC-1110": "Mathematical Methods",
+          "COSC-2010": "Data Structures"
+        },
+        "electives": {
+          "required_count": 2,
+          "valid_patterns": ["COSC-[2-4][0-9]{3}"],
+          "exclude_required": true,
+          "description": "Two COSC 2000-4999 electives"
+        },
+        "total_credits": 18
+      },
+      "Concentration in Technology, Ethics, and Society": {
+        "required_courses": {
+          "PHIL-2100": "Intro to Tech, Ethics, and Society"
+        },
+        "additional_requirements": {
+          "digital_ethics_or_law": {
+            "required_count": 1,
+            "valid_patterns": ["PHIL-[0-9]{4}", "GOVT-[0-9]{4}", "LAW-[0-9]{4}"],
+            "description": "Either digital ethics or digital law & policy course"
+          },
+          "tes_electives": {
+            "required_count": 1,
+            "valid_patterns": ["PHIL-[0-9]{4}", "GOVT-[0-9]{4}", "LAW-[0-9]{4}"],
+            "description": "One additional TES elective"
+          }
+        },
+        "total_credits": 9
+      }
+    },
+    "valid_math_electives": {
+      "MATH-1360": "Calculus II",
+      "MATH-2010": "Graph Theory",
+      "MATH-2020": "Combinatorics",
+      "MATH-2140": "Intro to Mathematical Statistics",
+      "MATH-2250": "Linear Algebra",
+      "MATH-2370": "Multivariable Calculus",
+      "MATH-2540": "Regression Analysis",
+      "MATH-2640": "Advanced Regression Methods",
+      "MATH-3210": "Abstract Algebra",
+      "PHIL-4000": "Symbolic Logic"
+    },
+    "stats_alternatives": {
+      "ECON-2110": "Economic Statistics",
+      "GOVT-2201": "Analysis of Political Data I",
+      "OPAN-2101": "Business Statistics",
+      "IPOL-3270": "Quantitative Methods for International Politics"
+    }
+}

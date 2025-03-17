@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>myDean</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap">
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+    <div class="user-status-bar">
+        <span class="user-status">Logged in as: {{ session.username }}</span>
+        <button class="logout-button" onclick="window.location.href='/logout'">Log Out</button>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <img src="/static/gtown.png" alt="Georgetown Logo" class="georgetown-logo">
+            <div class="header-text">
+                <h1>Welcome to myDean</h1>
+                <p class="subtitle">Your AI Academic Advisor</p>
+            </div>
+        </div>
+        
+        <div class="instructions collapsed" id="instructions-panel">
+            <div class="instructions-header">
+                <h3>🎓 How to Get the Most Out of myDean</h3>
+                <button class="toggle-instructions" onclick="toggleInstructions()">
+                    <span class="toggle-icon">▼</span>
+                </button>
+            </div>
+            
+            <div class="instructions-content">
+                <div class="feature-grid">
+                    <div class="feature-item">
+                        <span class="feature-icon">📚</span>
+                        <h4>Registration Planning</h4>
+                        <p>Search courses, get personalized recommendations, and plan your academic schedule</p>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">🎯</span>
+                        <h4>Degree Tracking</h4>
+                        <p>Monitor your major/minor requirements, analyze your transcript, and stay on track to graduate</p>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">🔍</span>
+                        <h4>Department Expert</h4>
+                        <p>Get detailed guidance on course prerequisites, program requirements, and various academic paths</p>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">⭐</span>
+                        <h4>Professor & Course Insights</h4>
+                        <p>Access student reviews, teaching styles, and course descriptions and information</p>
+                    </div>
+                </div>
+
+                <div class="tips-section">
+                    <h4>💡 Pro Tips</h4>
+                    <ul>
+                        <li>Upload your <a href="https://som.georgetown.edu/studentservices/office-of-the-registrar/transcripts/#:~:text=All%20current%20students%2C%20or%20past,or%20download%20their%20unofficial%20transcripts.&text=Click%20on%20the%20Student%20Profile,left%2C%20select%20Unofficial%20Transcript%20link." target="_blank" style="color: #041E42;">unofficial transcript</a> as a PDF to unlock personalized guidance (click the 📎 to upload it)</li>
+                        <li>Use the degree progress tracker to ensure you're meeting all requirements</li>
+                        <li>Learn about courses that fit your interests and academic goals</li>
+                        <li>Explore professor reviews and course details before making enrollment decisions</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="chat-container"></div>
+
+        <button id="scroll-button" class="scroll-button" style="display: none;">
+            <svg class="arrow-down" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 5v14m0 0l-6-6m6 6l6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </button>
+
+        <div class="input-wrapper">
+            <textarea 
+                id="user-input" 
+                placeholder="Ask about courses, professors, or requirements..."
+                rows="1"
+                maxlength="1000"
+            ></textarea>
+            <div class="input-actions">
+                <input 
+                    type="file" 
+                    id="file-upload" 
+                    accept=".pdf"
+                    style="display: none;"
+                >
+                <button class="upload-button" onclick="document.getElementById('file-upload').click()">
+                    <span class="button-icon">📎</span>
+                </button>
+                <span class="char-count" id="char-count">0/1000</span>
+                <button class="send-button" onclick="sendMessage()" id="send-button">
+                    <span class="button-text">Send</span>
+                    <span class="button-icon">→</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Schedule Toggle Button -->
+    <button class="schedule-toggle" onclick="toggleSchedule()">
+        Schedule
+    </button>
+
+    <!-- Schedule Panel -->
+    <div class="schedule-panel" id="schedulePanel">
+        <div class="schedule-header">
+            <h2>Weekly Schedule</h2>
+            <button class="schedule-close" onclick="toggleSchedule()">×</button>
+        </div>
+
+        <div class="schedule-grid">
+            <div class="time-column">
+                <div class="time-slot">8:00 AM</div>
+                <div class="time-slot">9:00 AM</div>
+                <div class="time-slot">10:00 AM</div>
+                <div class="time-slot">11:00 AM</div>
+                <div class="time-slot">12:00 PM</div>
+                <div class="time-slot">1:00 PM</div>
+                <div class="time-slot">2:00 PM</div>
+                <div class="time-slot">3:00 PM</div>
+                <div class="time-slot">4:00 PM</div>
+                <div class="time-slot">5:00 PM</div>
+                <div class="time-slot">6:00 PM</div>
+                <div class="time-slot">7:00 PM</div>
+            </div>
+            <div class="days-grid">
+                <div class="day-column" data-day="Monday">
+                    <div class="day-header">Monday</div>
+                    <div class="day-slots"></div>
+                </div>
+                <div class="day-column" data-day="Tuesday">
+                    <div class="day-header">Tuesday</div>
+                    <div class="day-slots"></div>
+                </div>
+                <div class="day-column" data-day="Wednesday">
+                    <div class="day-header">Wednesday</div>
+                    <div class="day-slots"></div>
+                </div>
+                <div class="day-column" data-day="Thursday">
+                    <div class="day-header">Thursday</div>
+                    <div class="day-slots"></div>
+                </div>
+                <div class="day-column" data-day="Friday">
+                    <div class="day-header">Friday</div>
+                    <div class="day-slots"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Progress Toggle Button -->
+    <button class="progress-toggle" onclick="toggleProgress()">
+        Track Progress
+    </button>
+
+    <!-- Progress Panel -->
+    <div class="progress-panel" id="progressPanel">
+        <div class="progress-header">
+            <h2>Degree Progress</h2>
+            <button class="progress-close" onclick="toggleProgress()">×</button>
+        </div>
+
+        <div class="progress-summary">
+            <h3>Overall Progress</h3>
+            <div id="program-names" class="program-names"></div>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 65%;"></div>
+            </div>
+        </div>
+
+        <div class="requirement-group">
+            <h3>Major Requirements</h3>
+            <ul class="requirement-list" id="majorRequirements">
+                <!-- Requirements will be populated dynamically -->
+            </ul>
+        </div>
+
+        <div class="requirement-group">
+            <h3>Minor Requirements</h3>
+            <ul class="requirement-list" id="minorRequirements">
+                <!-- Requirements will be populated dynamically -->
+            </ul>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="/static/js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+{
+    "courses": [
+        {
+            "title": "Deep Learning (Section 1)",
+            "crn": 48061,
+            "instructor": "Bargal, Sarah",
+            "schedule": "11:00 AM - 12:15 PM on Tuesday and Thursday",
+            "startTime": "11:00AM",
+            "endTime": "12:15PM",
+            "daysOfWeek": [
+                2,
+                4
+            ]
+        }
+    ],
+    "last_updated": "2025-02-20T12:11:34.586311"
+}
