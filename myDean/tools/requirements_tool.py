@@ -5,6 +5,7 @@ from typing_extensions import Annotated as AnnotatedType
 import json
 import os
 import re
+from utils import file_utils as fu
 
 # Constants for exact program names
 PROGRAM_NAMES = {
@@ -75,8 +76,7 @@ def get_degree_requirements(program: str = None) -> Dict[str, Any]:
         program: Optional. The specific program to get requirements for. Can use common variations
                 (e.g., "CS Minor", "AB", "Bachelor of Arts", etc.)
     """
-    with open(REQUIREMENTS_FILE, 'r') as f:
-        all_requirements = json.load(f)
+    all_requirements = fu.load_json(REQUIREMENTS_FILE, {})
     
     if not program:
         return all_requirements
@@ -116,18 +116,15 @@ def check_requirements_progress(
     
     # Get user's profile
     profile_path = f"data/profiles/{user_id}.json"
-    try:
-        with open(profile_path, 'r') as f:
-            profile = json.load(f)
-    except FileNotFoundError:
+    profile = fu.load_json(profile_path, None)
+    if profile is None:
         return {"error": "Profile not found"}
     
     # Normalize all completed courses to use dashes
     normalized_courses = [normalize_course_code(c) for c in profile.get("courses_completed", [])]
     
     # Get degree requirements
-    with open(REQUIREMENTS_FILE, 'r') as f:
-        requirements = json.load(f)
+    requirements = fu.load_json(REQUIREMENTS_FILE, {})
     
     progress = {}
     
@@ -172,9 +169,8 @@ def check_major_progress(major: str, req: Dict, normalized_courses: list) -> Dic
         required_math = [course for course in math_courses if "MATH-ELECTIVE" not in course]
         
         # Get valid math electives from requirements
-        with open(REQUIREMENTS_FILE, 'r') as f:
-            all_requirements = json.load(f)
-            valid_math_courses = list(all_requirements["valid_math_electives"].keys())
+        all_requirements = fu.load_json(REQUIREMENTS_FILE, {})
+        valid_math_courses = list(all_requirements.get("valid_math_electives", {}).keys())
         
         # First check specifically required math courses
         completed_math = [c for c in normalized_courses if c in required_math]
