@@ -27,9 +27,7 @@ VALID_PROFILE_KEYS = {
 
 PROFILE_PATH = "data/profiles/"
 
-def _ensure_profile_dir():
-    """Ensure the profiles directory exists"""
-    os.makedirs(PROFILE_PATH, exist_ok=True)
+from utils import file_utils as fu
 
 def _get_profile_path(user_id: str) -> str:
     """Get the full path for a user's profile file"""
@@ -48,15 +46,11 @@ def get_profile(
         majors, minors, and completed courses.
     """
     user_id = config["configurable"].get("user_id", "default_user")
-    _ensure_profile_dir()
     profile_path = _get_profile_path(user_id)
     
-    try:
-        with open(profile_path, 'r') as f:
-            return json.load(f)
-    except FileNotFoundError:
-        # Return empty profile if none exists
-        return {k: None if v is str else [] for k, v in VALID_PROFILE_KEYS.items()}
+    # Return empty profile if none exists
+    default_profile = {k: None if v is str else [] for k, v in VALID_PROFILE_KEYS.items()}
+    return fu.load_json(profile_path, default_profile)
 
 @tool
 def update_profile(
@@ -116,11 +110,8 @@ def update_profile(
                 raise ValueError(f"Invalid minor(s): {invalid_minors}. Valid minors are: {VALID_MINORS}")
     
     # Get existing profile or create new one
-    try:
-        with open(profile_path, 'r') as f:
-            profile = json.load(f)
-    except FileNotFoundError:
-        profile = {k: None if v is str else [] for k, v in VALID_PROFILE_KEYS.items()}
+    default_profile = {k: None if v is str else [] for k, v in VALID_PROFILE_KEYS.items()}
+    profile = fu.load_json(profile_path, default_profile)
     
     # Update profile
     for key, value in updates.items():
@@ -139,7 +130,6 @@ def update_profile(
             profile[key] = value
     
     # Store updated profile
-    with open(profile_path, 'w') as f:
-        json.dump(profile, f, indent=2)
+    fu.save_json(profile_path, profile)
     
     return f"Successfully updated profile fields: {', '.join(updates.keys())}" 

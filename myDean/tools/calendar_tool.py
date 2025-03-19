@@ -14,27 +14,25 @@ DAY_MAPPING = {
     'friday': 5
 }
 
+from utils import file_utils as fu
+
 def load_calendar_profile(username: str) -> Dict:
     """Load a user's calendar profile."""
     profile_path = f'data/calendar_profiles/{username}.json'
-    try:
-        with open(profile_path, 'r') as f:
-            return json.load(f)
-    except FileNotFoundError:
-        # Create default calendar profile
-        default_profile = {
-            'courses': [],
-            'last_updated': datetime.now().isoformat()
-        }
-        save_calendar_profile(username, default_profile)
-        return default_profile
+    default_profile = {
+        'courses': [],
+        'last_updated': datetime.now().isoformat()
+    }
+    profile = fu.load_json(profile_path, default_profile)
+    # If profile was not found, ensure it is saved for next time
+    if profile == default_profile:
+        save_calendar_profile(username, profile)
+    return profile
 
 def save_calendar_profile(username: str, profile_data: Dict):
     """Save a user's calendar profile."""
     profile_path = f'data/calendar_profiles/{username}.json'
-    os.makedirs(os.path.dirname(profile_path), exist_ok=True)
-    with open(profile_path, 'w') as f:
-        json.dump(profile_data, f, indent=4)
+    fu.save_json(profile_path, profile_data)
 
 def parse_meeting_details(meeting_details: str) -> Optional[Dict]:
     """Parse meeting details string into structured format.

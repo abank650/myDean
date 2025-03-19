@@ -1,4 +1,10 @@
 import json
+import os
+import sys
+
+# Add parent directory to path to import utils
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from utils import file_utils as fu
 
 def clear_users():
     # Reset users.json to empty users dictionary
@@ -7,8 +13,7 @@ def clear_users():
     }
     
     # Write the empty users dictionary to users.json
-    with open('./users.json', 'w') as f:
-        json.dump(empty_users, f, indent=4)
+    fu.save_json('./users.json', empty_users)
 
 if __name__ == "__main__":
     print("Clearing users.json...")

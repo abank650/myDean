@@ -20,29 +20,23 @@ app = Flask(__name__)
 app.secret_key = secrets.token_hex(16)  # Generate a random secret key for sessions
 app.permanent_session_lifetime = timedelta(hours=24)  # Session expires after 24 hours
 
+from utils import file_utils as fu
+
 def load_users():
-    try:
-        with open('data/users.json', 'r') as f:
-            return json.load(f)
-    except FileNotFoundError:
-        return {"users": {}}
+    return fu.load_json('data/users.json', {"users": {}})
 
 def save_users(users_data):
-    with open('data/users.json', 'w') as f:
-        json.dump(users_data, f, indent=4)
+    fu.save_json('data/users.json', users_data)
 
 def hash_password(password):
     return hashlib.sha256(password.encode()).hexdigest()
 
 def save_profile(username, profile_data):
     profile_path = f'data/profiles/{username}.json'
-    os.makedirs(os.path.dirname(profile_path), exist_ok=True)
-    with open(profile_path, 'w') as f:
-        json.dump(profile_data, f, indent=4)
+    fu.save_json(profile_path, profile_data)
 
 def load_degree_requirements():
-    with open('data/degree_requirements.json', 'r') as f:
-        return json.load(f)
+    return fu.load_json('data/degree_requirements.json', {})
 
 def check_course_matches_pattern(course: str, patterns: List[str]) -> bool:
     return any(re.match(pattern, course) for pattern in patterns)
